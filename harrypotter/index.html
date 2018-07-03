@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Harry Potter</title>
+  <link rel="stylesheet" href="css/comment.css">
+  <link rel="stylesheet" href="http://at.alicdn.com/t/font_666854_xgho5j8747dp9zfr.css">
+  <link rel="stylesheet" href="http://at.alicdn.com/t/font_673378_jc4pu7dwssg.css">
+  <style>
+
+    .layout {
+      min-width: 1000px;
+    }
+    header {
+      position: relative;
+      height: 100%;
+      max-height: 700px;
+      background: #000 url(https://10wallpaper.com/wallpaper/1366x768/1108/Harry_Potter_and_the_Deathly_Hallows_HD_movie_wallpaper_1366x768.jpg) center no-repeat;
+      background-size: cover;
+    }
+    header .logo {
+      font-size:28px;
+      font-family: "Old English Text MT";
+      color: #fed136;
+      float: left;
+      margin-top: 10px;
+    }
+    header .nar {
+      float: right;
+    }
+    header .nar > li {
+      float: left;
+      margin: 10px;
+    }
+    header .nar a {
+      display: block;
+      padding: 5px 10px;
+      color: #fff;
+      border-radius: 4px;
+    }
+    header .nar a:hover {
+      background: #fed136;         
+    }
+    header .intro {
+      position: absolute;
+      top: 50%;
+      left:50%;
+      transform: translate(-50%,-50%);
+      text-align: center;
+      color: #fff;
+    }
+    header .intro > h1 {
+      font-size: 30px;
+      font-family: "Droid Serif", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    }
+    header .intro > h2 {
+      font-size: 60px;
+      line-height: 60px;
+      margin-top: 20px;
+      font-family: Montserrat, "Helvetica Neue", Helvetica, Arial, sans-serif;
+    }
+    header .intro .button {
+      margin-top: 40px;      
+    }
+    header .intro a:hover {
+      background-color: #fec006;
+     /* opacity: .9; */
+    }
+    section {
+      text-align: center;
+      margin-top: 150px;
+    }
+    section > h2 {
+      font-size: 45px;
+      color: #000;
+    }
+    section > p {
+      font-size: 18px;
+      margin-top: 10px;
+      color: #999;
+    }
+    section .nar2 {
+      margin-top: 40px;
+    }
+    section .nar2 li {
+      float: left;
+      padding: 30px 20px;
+      width: 33.33%;
+    }
+    section .nar2 li .iconfont {
+      font-size: 55px;
+      color: #fff;
+      padding: 20px;
+      background: #fed136;
+      border-radius: 50%; 
+    }
+    section .nar2 li h3 {
+      font-size: 20px;
+      color: #000;
+      margin-top: 30px;
+      font-family: "方正北魏楷书简体";
+    }
+    section .nar2 li p {
+      margin-top: 20px;
+      font-family: "方正中等线_GBK";
+      font-size: 14px;
+      text-align: left;
+      text-align:justify;
+      color: #999;
+    }
+    section .nar3 {
+      margin-top: 40px;
+      background: #fff;
+    }
+    section .nar3 figure {
+      float: left;
+      margin: 20px;
+      height: 350px;
+      width: calc(50% - 40px);
+    }
+    section .nar3 figure img {
+      width: 100%;
+      height: 100%;
+/*       display: block;
+      max-width: 100%;
+      height: auto; */
+    }
+    section .nar3 figure a {
+      display: block;
+      height: 300px;
+    }
+    section .nar3 figure a:hover {
+      opacity: .5;
+      background-color: #fed136;
+/*      background: rgba(254,209,54,.2);
+       position: absolute;
+      width: 100%;
+      height: 100%;   */
+      -webkit-transition: .5s; 
+    }
+    #school * {
+      z-index: 2;
+    }
+    section .nar3 figure figcaption {
+      font-size: 16px;
+      font-weight: bold;
+      font-family: "方正北魏楷书简体";
+      margin-top: 10px;
+    } 
+    section .nar3 figure p {
+      font-family: "微软雅黑";
+      font-size: 14px;
+      color: #999;
+    } 
+    section .nar4 {
+      margin-top: 80px;
+    }
+    section .nar4 li {
+      margin-top: 80px;
+      position: relative;
+    }
+    section .nar4 li:after {
+      content: "";
+      display: block;
+      clear: both;
+    }
+    section .nar4 li img {
+      width: 200px;
+      height: 200px;
+      margin-top: -15px;
+      border-radius: 50%;
+      border: 10px solid lightblue;
+    }
+    section .nar4 li h3 {
+      font-size: 16px;
+      font-weight: bold;
+      font-family: "方正北魏楷书简体";
+    }
+    section .nar4 li p {
+      margin-top: 10px;
+      font-size: 14px;
+      color: #999;
+      text-align:justify;
+    }
+    section .nar4 li:nth-child(odd) {
+      margin-right: calc(50% - 100px);
+      text-align: right;
+    }
+    section .nar4 li:nth-child(odd) img {
+      float: right;
+    }
+    section .nar4 li:nth-child(odd) h3,h5 {
+      margin-right: 220px;
+    }
+    section .nar4 li:nth-child(odd) p {
+      margin-right: 220px;
+    }
+    section .nar4 li:nth-child(even) {
+      margin-left: calc(50% - 100px);
+      text-align: left;
+    }
+    section .nar4 li:nth-child(even) img {
+      float: left;
+    }
+    section .nar4 li:nth-child(even) h3,h5 {
+      margin-left: 220px;
+    }
+    section .nar4 li:nth-child(even) p {
+      margin-left: 220px;
+    }
+    section .nar4 li::before {
+      content:"";
+      position: absolute;
+      left: 100px;
+      top: 185px;
+      display: inline-block;
+      width: 6px;
+      height: 90px;      
+      background-color: lightblue;
+    }
+    section .nar4 li:nth-child(odd)::before {
+      left: 500px;
+    }
+    section .nar4 li span {
+      display: inline-block;
+      width: 200px;
+      height: 200px;
+      border: 10px solid lightblue;
+      border-radius: 50%;
+      font-size: 20px;
+      text-align: center;
+      padding-top: 55px;
+    }
+    section .nar4 li:last-child::before {
+      height: 0;
+    }
+    section .nar5 li {
+      float: left;
+      padding: 30px 20px;
+      width: 33.33%;
+    }
+    section .nar5 li h3 {
+      font-size: 18px;
+      font-weight: bold;
+      margin-top: 20px;
+      font-family: "方正北魏楷书简体";
+    }
+    section .nar5 li p {
+      font-size: 14px;
+      color: #999;
+      text-align:center;
+    }
+    section .nar5 li img {
+      width: 200px;
+      height: 200px;
+      border:5px solid #fff;
+      border-radius: 50%; 
+    }
+    section .nar5 li div .iconfont {
+      font-size:40px;
+      color: #333;
+    }
+    section .nar5 li div a:hover {
+      color: #fed136;
+      -webkit-transition: .5s; 
+    }
+/*     section .adver img {
+      float: left;
+      width: 25%;
+    } */
+    footer {
+      margin: 100px auto;    
+    }
+    footer .information {
+      position: relative;
+      height: 100%;
+      max-height: 700px;
+      text-align: center;
+      background: #000 url(http://images6.fanpop.com/image/photos/38600000/Harry-Potter-and-the-Deathly-Hallows-harry-potter-38684856-1600-900.jpg) center no-repeat;
+      background-size: cover;
+    }
+    footer .information h2 {
+      padding-top: 100px;
+      font-size: 50px;
+      color: #fff;
+    }
+    footer .information p {     
+      font-size: 19px;
+      color: #d8d8d8;
+    }
+    footer .information div {
+      width: 1000px;
+      margin: auto;
+      font-size:40px;
+    }
+    footer .information ul li {
+      float: left;
+      width: 50%;
+      padding: 10px;
+      font-size: 20px;
+      margin-top: 70px;
+    }
+    footer .information ul li form input {
+      display: block;
+      font-size: 18px;
+      color: #999;
+      padding-left: 20px;
+      margin-bottom: 20px;
+      width: 470px;
+      height: 60px;
+      border: 1px solid #fff;
+      border-radius: 4px;
+    }
+    footer .information ul li textarea {
+      font-size: 18px;
+      color: #999;
+      padding-left: 20px;
+      padding-top: 15px;
+      height: 220px;
+      width: 470px;
+      border: 1px solid #fff;
+      border-radius: 4px;
+    }
+    footer .right {
+      width: 1000px;
+      margin: 40px auto;
+      font-size: 18px;
+    }
+    footer .right li {
+      float: left;
+      width: 33.33%;
+      text-align: center;
+    }
+    footer .right li .iconfont {
+      font-size: 30px;
+    }
+    footer .right li a {
+      color: #333;
+    }
+    footer .right li a:hover {
+      color: #fed136;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="navbar layout clearfix">
+      <a class="logo" href="#">Harry Potter</a>
+      <ul class="nar">
+        <li><a href="#">INTRODUCE</a></li>
+        <li><a href="#">SCHOOL</a></li>
+        <li><a href="#">STORY</a></li>
+        <li><a href="#">TEAM</a></li>
+        <li><a href="#">CONTACT</a></li>
+      </ul>
+    </div>
+    <div class="intro layout">
+        <h1><i>Harry Potter</i></h1>
+        <h2><b>WELCOME TO THE MAGIC WORLD</b></h2>
+        <a class="button" href="#"><b>TELL ME MORE</b></a>
+    </div>
+  </header>
+  <main class="layout">
+    <section>
+      <h2>INTRODUCE</h2>
+      <p><i>Main role introduction</i></p>
+      <ul class="nar2 clearfix">
+        <li>
+          <span class="iconfont">&#xe615;</span>
+          <h3>Harry James Potter</h3>
+          <p>Was born on July 31, 1980, is a sorcerer couple James potter and lily potter's son, was voldemort attempted murder in infancy, because mother sacrifice themselves cast protect voldemort curse rebound, he has become in the history of the only one who survived under the killing curse, with a flash of lightning shaped scar on his forehead.</p>
+        </li>
+        <li>
+          <span class="iconfont">&#xe625;</span>
+          <h3>Hermione Jean Granger</h3>
+          <p>Born on September 19, 1979, from a muggle family. In the book, the image of a bright girl who likes to delve into academics and know everything, sometimes appears arbitrary, and her knowledge has proved useful on many of their adventures. Hermione soon became the smartest student in the grade when she arrived at hogwarts.</p>
+        </li>
+        <li>
+          <span class="iconfont">&#xe613;</span>
+          <h3>Ronald Bilius Weasley</h3>
+          <p>Born on March 1, 1980, harry's best friend at hogwarts, the comic character in the book. The weasleys were an ancient, pureblood family with flaming red hair. He and harry were buddies, eventually marrying hermione and working with harry in the ministry of magic.</p>
+        </li>
+      </ul>
+    </section>
+    <section id="school">
+      <h2>SCHOOL</h2>
+      <p><i>Hogwarts School of Witchcraft and Wizardry</i></p>
+      <div class="nar3 clearfix">
+        <figure>
+          <a href="#"><img src="http://img.zcool.cn/community/0166fb5543cf840000019ae9004014.jpg@1280w_1l_2o_100sh.webp" alt=""></a>
+          <figcaption>GRYFFINDOR</figcaption>
+          <p><i>Bravery and courage</i></p>
+        </figure>
+        <figure>
+          <a href="#"><img src="http://img.zcool.cn/community/01193b5543cf830000019ae9e7c391.jpg@1280w_1l_2o_100sh.webp" alt=""></a>
+          <figcaption>HUFFLEPUFF</figcaption>
+          <p><i>Loyalty and trust</i></p>
+        </figure>
+        <figure>
+          <a href="#"><img src="http://img.zcool.cn/community/0171365543cf820000019ae911e58a.jpg@1280w_1l_2o_100sh.jpg" alt=""></a>
+          <figcaption>RAVENCLAW</figcaption>
+          <p><i>Wisdom and erudition</i></p>
+        </figure>
+        <figure>
+          <a href="#"><img src="http://img.zcool.cn/community/01fdde5543cf830000019ae9d27cbb.jpg@1280w_1l_2o_100sh.webp" alt=""></a>
+          <figcaption>SLYTHERIN</figcaption>
+          <p><i>Ambition and shrewdness</i></p>
+        </figure>
+      </div>
+    </section>
+    <section>
+      <h2>STORY</h2>
+      <p>哈利在霍格沃茨六年的冒险生活</p>
+      <ul class="nar4 clearfix">
+        <li>
+          <img src="http://cdnimg103.lizhi.fm/audio_cover/2016/06/26/29501564516922119_320x320.jpg" alt="">
+          <h3>哈利·波特与魔法石</h3>
+          <h5>时间：1997年6月26日</h5>
+          <p>从小被寄养在姨丈家里的哈利波特，饱受姨丈一家人的歧视与欺侮，然而就在11岁生日那天，哈利波特得知了自己原本是魔法师，并且被录取为霍格沃茨魔法学校中的一员。无意间哈利发现了魔法石的秘密,邪恶的阴谋在平静的霍格沃茨里悄悄地滋长，哈利、罗恩与赫敏决定一同去探个究竟，凭借他们的勇敢智慧，哈利最终阻止邪恶阴谋的发生保护了魔法石。</p>
+        </li>
+        <li>
+          <img src="http://cdnimg103.lizhi.fm/audio_cover/2016/10/06/2560928373353380871_320x320.jpg" alt="">
+          <h3>哈利·波特与密室</h3>
+          <h5>时间：1998年7月2日</h5>
+          <p>传说中的密室被斯莱特林的继承人打开，哈利因为会蛇佬腔被所有人怀疑，哈利发现一本神秘的日记记录了汤姆·里德尔50年前的记忆，随之恐怖袭击事件在原本平静的校园内不断发生。罗恩的妹妹金妮被带到密室，墙上留下了密室的血字警告。哈利终于找到密室入口，迎接他的将是可怕的挑战。最终金妮苏醒，伏地魔留下的神秘日记被销毁。</p>
+        </li>
+        <li>
+          <img src="http://cdnimg103.lizhi.fm/audio_cover/2016/12/31/2576805067858184711_320x320.jpg" alt="">
+          <h3>哈利·波特与阿兹卡班囚徒</h3>
+          <h5>时间：1999年9月8日</h5>
+          <p>在回学校的火车上，哈利见识到了传说中的摄魂怪。学校里哈利又看到了那条象征死亡的大狗，此时哈利也知道了他父母的死因，一切都归罪于小天狼星布莱克。哈利决定报仇。随着罗恩的宠物斑斑化成人形，小天狼星讲述了事情的真相，眼看小天狼星要恢复清白，斯内普破坏了这一切。在校长邓布利多的指导下哈利帮助被捕的小天狼星逃脱。</p>
+        </li>
+        <li>
+          <img src="http://cdnimg103.lizhi.fm/audio_cover/2016/08/09/30539732999111303_320x320.jpg" alt="">
+          <h3>哈利·波特与火焰杯</h3>
+          <h5>时间：2000年7月8日</h5>
+          <p>霍格沃茨迎来了魔法师界的盛世：“三强争霸赛”。邪恶魔法师用魔法使不够年龄的哈利成为三强争霸赛的第四位选手。在好友赫敏、罗恩的帮助下，哈利顺利完成三项任务。当哈利与他的同学塞德里克一起捧起高脚杯迎接胜利时，奖杯变成一把门钥匙，把哈利带到了一座墓地。塞德里克被食死徒杀死，波特的血液令藏在蛇身十三年的邪恶伏地魔复活。</p>
+        </li>
+        <li>
+          <img src="http://i-7.vcimg.com/crop/9a6145d2325f88a6a6a3479e7e3cf640894089(600x)/thumb.jpg" alt="">
+          <h3>哈利·波特与凤凰社</h3>
+          <h5>时间：2003年6月21日</h5>
+          <p>哈利在茫然和愤怒中来到霍格沃茨，然而邓布利多不愿见他，海格不知去向。更糟糕的是，哈利越来越频繁地梦见一道长廊，每当他快要走进长廊尽头的门时，他都会头痛欲裂从梦中惊醒，觉得自己的身体里蠕动着一条大蛇，大蛇的影子在哈利的脑海里越来越清晰，伏地魔走近了哈利，这时，邓布利多告诉他一个天大的秘密。</p>
+        </li>
+        <li>
+          <span>Harry Potter and the Half-Blood Prince</span>
+        </li>
+      </ul>
+    </section>
+    <section>
+      <h2>TEAM</h2>
+      <p>哈利·波特</p>
+      <ul class="nar5 clearfix">
+        <li>
+          <img src="http://pic.baike.soso.com/p/20131205/20131205123048-1958844771.jpg" alt="">
+          <h3>丹尼尔·雷德克里夫</h3>
+          <p><i>哈利·波特</i></p>
+          <div>
+            <a class="iconfont" href="#">&#xe767;</a>
+            <a class="iconfont" href="#">&#xe60a;</a>
+            <a class="iconfont" href="#">&#xe604;</a>
+          </div>
+        </li>
+        <li>
+          <img src="http://www.dxddcx.com/d/file/star/k0sxfvyp5ev.jpg" alt="">
+          <h3>艾玛·沃特森</h3>
+          <p><i>赫敏·格兰杰</i></p>
+          <div>
+            <a class="iconfont" href="#">&#xe767;</a>
+            <a class="iconfont" href="#">&#xe60a;</a>
+            <a class="iconfont" href="#">&#xe604;</a>
+          </div>
+        </li>
+        <li>
+          <img src="http://www.bai-ke.cn/2upload/08/98/01100000000000144765984638502_s.jpg" alt="">
+          <h3>鲁伯特·格林特</h3>
+          <p><i>罗恩·韦斯莱</i></p>
+          <div>
+            <a class="iconfont" href="#">&#xe767;</a>
+            <a class="iconfont" href="#">&#xe60a;</a>
+            <a class="iconfont" href="#">&#xe604;</a>
+          </div>
+        </li>
+      </ul>
+<!--       <div class="adver">
+        <img src="http://www.designbolts.com/wp-content/uploads/2013/09/Free-envato-Logo-Font-Download.jpg">
+        <img src="http://www.designbolts.com/wp-content/uploads/2013/09/Free-IBM-Logo-Font-download.jpg">
+        <img src="http://www.designbolts.com/wp-content/uploads/2013/09/Free-Linkedin-Font-Logo-Download.jpg">
+        <img src="http://www.designbolts.com/wp-content/uploads/2013/09/Free-Nintendo-Logo-font-Download.jpg">
+      </div> -->
+    </section>            
+  </main>
+  <footer>
+    <div class="information">
+      <h2>CONTACT US</h2>
+      <p><i>Please fill in your personal information</i></p>
+      <div>
+        <ul class="clearfix">
+          <li>
+            <form>
+              <input type="text" name="name" value="YOUR NAME *">
+              <input type="text" name="email" value="YOUR EMAIL *">
+              <input type="text" name="phone" value="YOUR PHONE *">
+            </form>
+          </li>
+          <li>
+            <textarea cols="30" rows="10">YOUR MESSAGE *</textarea>
+          </li>
+        </ul>
+      </div>
+      <a class="button" href="#"><b>SEND MESSAGE</b></a>
+    </div>
+    <div class="right">
+      <ul class="clearfix">
+        <li>
+          <p>Copyright © Your Website 2014</p>
+        </li>
+        <li>
+          <a class="iconfont" href="#">&#xe767;</a>
+          <a class="iconfont" href="#">&#xe60a;</a>
+          <a class="iconfont" href="#">&#xe604;</a>
+        </li>
+        <li>
+          <a href="#">Privacy Policy</a>
+          <a href="#">Terms of Use</a>
+        </li>
+      </ul>
+    </div>
+  </footer>
+</body>
+</html>
