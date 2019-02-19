@@ -3,10 +3,16 @@
 <head>
   <meta charset="utf-8">
   <title>登录|注册</title>
-  <link rel="stylesheet" href="css//common.css">
-  <link rel="stylesheet" href="https://unpkg.com/font-awesome@4.7.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="css/common.css">
+ 
   <link rel="stylesheet" href="https://at.alicdn.com/t/font_1049267_7f2amq6e6oc.css">
   <style>
+    .iconfont {
+    font-family: "iconfont" !important;
+    font-size: 24px;
+    font-style: normal;
+    -webkit-font-smoothing: antialiased;
+    }  
     header {
       position: absolute;
       width: 100%;
@@ -15,9 +21,10 @@
     header .header-user { 
       float: right;
       margin-right: 20px;
+      font-size: 24px;
     }
     main {
-      background:#000 url(http://www.wdgsw.com/data/attachment/forum/201901/28/115950vce9e0g6cs7790o1.jpg) center no-repeat;
+      background:#000 url(http://img17.3lian.com/d/file/201702/17/62d718d1c443c62a6018da04adfb5d84.jpg) center no-repeat;
       background-size: cover;
     }
     .flip-modal {
@@ -119,11 +126,11 @@
           <form action="/login" method='post'>
             <div class="input-field">
               <i class='iconfont icon-user-o'></i>
-              <input type="text" name='username' placeholder='输入用户名'>
+              <input type="text" name='username' placeholder='用户名'>
             </div>
             <div class="input-field">
               <i class='iconfont icon-password'></i>
-              <input type="password" name='password' placeholder='输入密码'>
+              <input type="password" name='password' placeholder='密码'>
             </div>
             <div class="input-field">
               <input type="submit" value='登录'>
