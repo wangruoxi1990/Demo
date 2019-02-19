@@ -1,0 +1,18 @@
+* {
+    margin: 0px;
+    padding: 0px;
+    box-sizing: border-box;
+  }
+  a {
+    text-decoration: none;
+    color: #666;
+  }
+  html,body,main {
+    height: 100%;
+  }
+  body {
+    font: 14px/1.5 Arial;
+  }
+  .iconfont {
+      font-size: 24px;
+  }
