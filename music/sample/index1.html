@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="robots" content="noindex">
+    <link rel="stylesheet" href="https://unpkg.com/font-awesome@4.7.0/css/font-awesome.min.css">
+    <title>音乐播放器</title>
+<style id='jsbin-css'>
+.cover {
+    position: absolute;
+    content: '';
+    display: block;
+    width: 100%;
+    height: 100%;
+    background: url(http://cloud.hunger-valley.com/17-9-22/87786461.jpg) center center no-repeat;
+    background-size: cover;
+    filter: blur(5px);
+}
+.musicbox {
+    position: absolute;
+    left: 50%;
+    top: 40%;
+    transform: translate(-50%, -50%);
+    font-family: cursive,microsoft Yahei;
+    font-size: 16px;
+    color: #f06d6a;   
+    width: 340px;
+}
+.music-panel {
+    border: 1px solid #76dba3;
+    padding: 20px 20px 5px 25px;
+    box-shadow: 0px 2px 5px 0px rgba(0,0,0,0.1), 0px 2px 10px 0px rgba(0, 0, 0, 0.05);
+    background-color: rgba(255,255,255,0.8);
+}
+ .musicbox .control {
+     margin-top: 20px;
+     font-size:22px;
+     color: #ee8a87;
+     float: left;
+ }
+.musicbox .control .fa {
+     margin-right: 12px;
+     cursor: pointer; 
+ }
+ .musicbox .control .fa.disable {
+     opacity: 0.3; 
+ }
+ .musicbox .info {
+     margin-left: 120px;
+ }
+ .musicbox .info .title {
+     font-size: 18px;
+ }
+ .musicbox .info .auther {
+     font-size: 13px;
+ }
+ .musicbox .progress {
+     width: 260px;
+ }
+ .musicbox .progress .bar {
+     height: 3px;
+     margin-top: 5px;
+     background-color: rgba(0,0,0,0.2);
+     cursor: pointer;
+ }
+ .musicbox .progress .progress-now {
+     background-color: #ee8a87;
+     height: 3px;
+     width: 0;
+     position: relative;
+ }
+.musicbox .time {
+    text-align: right;
+}
+.musicbox .list {
+    list-style: none;
+    width: 320px;
+    height: 200px;
+    padding: 10px 0 15px 25px;
+    background: rgba(255,255,255,0.2);
+    overflow: scroll;
+}
+.musicbox .list>li {  
+    font-size: 14px;
+    color: #f0bdbb;
+}
+.musicbox .list>li:hover {
+    color: rgba(233,138,135,.5);
+    cursor: pointer;
+}
+.musicbox .list .playing {
+    color: #ee8a87;
+}
+.musicbox:after,
+.musicbox .music:after {
+    content: '';
+    display: block;
+    clear: both;
+}
+</style>
+</head>
+<body>
+    <div class="cover"></div>
+    <div class="musicbox">
+        <div class="music-panel">
+            <div class="music">
+                <div class="control">
+                    <span class='back'><i class="fa fa-step-backward"></i></span>
+                    <span class='play'><i class="fa fa-pause"></i></span>
+                    <span class='forward'><i class="fa fa-step-forward"></i></span>
+                </div>
+                <div class="info">
+                    <div class="title">My song</div>
+                    <div class="auther">ruoyu</div>
+                </div>
+            </div>
+
+            <div class="progress">
+                <div class="bar">
+                    <div class="progress-total"></div>
+                    <div class="progress-now"></div>
+                </div>
+
+                <div class="time">0:00</div>
+            </div>
+        </div>
+
+        <ul class="list">
+        </ul>
+    </div>
+
+<script>
+    function $(selector){
+        return document.querySelector(selector)
+    }
+    //使用ajax获取数据，封装一个函数
+    function getMusicList(callback){
+        var xhr = new XMLHttpRequest()
+        xhr.open('GET','/music.json',true)
+        xhr.onload = function(){
+            if((xhr.status >= 200 && xhr.status <300)||xhr.status === 304){
+                callback(JSON.parse(xhr.responseText))
+            }else{
+                console.log('获取数据失败')
+            }
+        }
+        xhr.onerror = function(){
+            console.log('网络异常')
+        }
+        xhr.send()
+    }
+
+    /*
+    getMusicList(function(list){
+        console.log(list)
+    })
+    */
+    //0:{src:"http://cloud.hunger-valley.com/music/玫瑰.mp3", title: "玫瑰", auther: "贰佰", img:".."}
+    //1:{src:...}
+
+   /*
+   //获取到list列表后，就可以取得具体某项数据
+    getMusicList(function(list){
+        console.log(list)
+        var song = list[0]
+        var audioObject = new Audio(song.src)  创建audio
+        audioObject.play() 播放音乐
+    })
+    */
+
+    /*
+    //如何去定位播放第一首、第二首..音乐？可以创建一个变量表示下标，0表示第一首，1表示第二首..默认为0
+    var currentIndex = 0
+    getMusicList(function(list){
+        loadMusic(list[currentIndex])  //此时修改currentIndex值就播放指定的音乐
+    })
+    
+    function loadMusic(musicObjec){  //参数musicObject就是list[currentIndex]对象
+        console.log('begin play', musicObjec)
+    }
+    //begin play {src: "http://cloud.hunger-valley.com/music/玫瑰.mp3", title: "玫瑰", auther: "贰佰", img: ".."}
+    */
+
+    //创建audio，设置成自动播放
+    var currentIndex = 0
+    var musicList = []       //点击‘下一首’时创建的全局变量
+    var audio = new Audio()  //此时没有src
+    audio.autoplay = true    //设置为自动播放
+
+    getMusicList(function(list){
+        musicList = list     //在点击下一首按钮时使用
+        generateList(musicList)   //显示音乐列表时创建的方法 
+        //注：加载音乐列表要放在loadMusic之前，否则播放音乐在列表加载完成前执行，此时在loadMusic里的for循环无法执行
+        loadMusic(list[currentIndex])
+    })
+
+    /*
+    function loadMusic(musicObject){
+        console.log('begin play', musicObject)
+        audio.src = musicObject.src   //将musicObject的src赋值给audio，自动播放第currentIndex首音乐
+    }
+    */
+
+    //操作dom，修改title、auther、img
+    function loadMusic(musicObj){
+        //console.log('begin play', musicObj)
+        audio.src = musicObj.src
+        $('.musicbox .title').innerText = musicObj.title
+        $('.musicbox .auther').innerText = musicObj.auther  
+        $('.cover').style.backgroundImage = 'url(' + musicObj.img + ')'
+
+        for(var i = 0;i < $('.musicbox .list').children.length; i++){           
+            if($('.musicbox .list').children[i].innerText == (musicList[currentIndex].auther + '-' + musicList[currentIndex].title)){
+                $('.musicbox .list').children[i].classList.add('playing')
+                //$('.musicbox .list').children[i].style.color = '#ee8a87'
+            }else{
+                $('.musicbox .list').children[i].classList.remove('playing')
+                //$('.musicbox .list').children[i].style.color = '#f0bdbb'
+            }
+        }
+    }
+
+    //修改进度条progress-now、时间time。通过监听timeupdate事件，该事件是由currentTime播放时间自动触发的。
+    audio.ontimeupdate = function(){
+        //console.log(this.currentTime)
+        $('.musicbox .progress-now').style.width = (this.currentTime / this.duration) * 100 + '%'  //修改进度条只要改width的百分比
+        // var min = Math.floor(this.currentTime / 60)
+        // var sec = Math.floor(this.currentTime % 60) + ''  //将秒数转换成字符串格式
+        // sec = sec.length === 2? sec: '0' + sec  //判断字符串秒数长度是否为2，是则当前秒数，不是则在前面加个‘0’
+        // $('.musicbox .time').innerText = min + ':' + sec 
+    }
+
+    //timeupdate每秒触发4-66次，时间跳动不均匀，使用setInterval
+    var clock 
+    audio.onplay = function(){
+        clock = setInterval(function(){
+            var min = Math.floor(audio.currentTime / 60)
+            var sec = Math.floor(audio.currentTime % 60) + ''   
+            sec = sec.length === 2? sec: '0' + sec   
+            $('.musicbox .time').innerText = min + ':' +sec
+        },1000)
+    }
+    audio.onpause = function(){
+        clearInterval(clock)
+    }
+
+    //判断音乐当前所处状态：播放或停止状态，点击时如果状态为暂停，就改成播放；播放状态就改成暂停
+    $('.musicbox .play').onclick = function(){
+        if(audio.paused){  //如果为true，则为暂停状态
+            audio.play()   //点击时播放音乐
+            this.querySelector('.fa').classList.remove('fa-play')
+            this.querySelector('.fa').classList.add('fa-pause')
+        }else{
+            audio.pause()
+            this.querySelector('.fa').classList.remove('fa-pause')
+            this.querySelector('.fa').classList.add('fa-play')
+        }
+    }
+
+    //点击下一曲时播放下一首音乐，如果是最后一曲，点击下一首会循环播放第一首，循环方式可以使用
+    /*
+    currentIndex = (++currentIndex) % musicList.length   musicList为音乐列表，所以创建一个全局变量
+    musicList = list 参数list在getMusicList函数里，表示当数据到来时，将值赋给全局变量，之后可以全局使用
+    */
+    
+    $('.musicbox .forward').onclick = function(){
+        currentIndex = (++currentIndex) % musicList.length
+        $('.musicbox .progress-now').style.width = 0  //下一曲时进度条清零
+        // loadMusic(musicList[currentIndex])
+        // $('.musicbox .play').querySelector('.fa').classList.remove('fa-play')
+        // $('.musicbox .play').querySelector('.fa').classList.add('fa-pause')
+        //loadMusic(musicList[currentIndex]) 在‘暂停’状态下(图标为‘播放’)点击下一首，音乐会自动播放，但是图标仍为‘播放’，没有换成‘暂停’
+        //所以在点击下一首事件时判断，‘暂停’时下一首仍是暂停，‘播放’时仍然播放
+        if(audio.paused){  //如果为true，则为暂停状态
+            loadMusic(musicList[currentIndex])
+            audio.pause()   //换成下一曲时任然暂停点
+        }else{
+            loadMusic(musicList[currentIndex]) 
+            //audio.play()   播放状态换成下一曲时任然播放，因为设置成自动播放，所以此处可以不加audio.play()
+        }
+    }
+
+    //点击上一首
+    $('.musicbox .back').onclick = function(){
+        currentIndex = (musicList.length + --currentIndex) % musicList.length
+        $('.musicbox .progress-now').style.width = 0
+        // loadMusic(musicList[currentIndex])
+        // $('.musicbox .play').querySelector('.fa').classList.remove('fa-play')
+        // $('.musicbox .play').querySelector('.fa').classList.add('fa-pause')
+        if(audio.paused){
+            loadMusic(musicList[currentIndex])
+            audio.pause()
+        }else{
+            loadMusic(musicList[currentIndex])
+        }
+    }
+
+    //拖动进度条时改变音乐播放进程，是给整个‘bar’绑定事件，而非单独的‘progress-now’
+    /*
+    $('.musicbox .bar').onclick = function(e){
+        console.log(e)
+    }
+    得到对象：MouseEvent {isTrusted: true, screenX: -1427, screenY: 498, clientX: 429, clientY: 364, …}，其中有一个值offsetX: 215表示点击进度条时的位置。
+    getComputedStyle($('.bar'))；
+    得到对象：CSSStyleDeclaration {0: "animation-delay", 1: "animation-direction",...}
+    getComputedStyle($('.bar')).width；
+    得到宽度："260px"，将其转化成整数，使用parseInt
+    */
+    $('.musicbox .bar').onclick = function(e){
+        var percent = e.offsetX / parseInt(getComputedStyle(this).width) //点击进度条位置时，所处的宽度除以总宽得百分比
+        audio.currentTime = audio.duration * percent  //将音乐总时长乘以百分比的值赋给当前音乐时间
+    }
+
+    //当音乐播放结束，自动播放下一首，监听ended事件，功能与点击下一首一样
+    audio.onended = function(){
+        currentIndex = (++currentIndex) % musicList.length
+        loadMusic(musicList[currentIndex])
+    }
+
+    //生成音乐列表，列表一开始是没有的，因为没有数据，等到数据到来时才显示，所以可以在得到数据时添加一个方法
+    /*
+    getMusicList(function(list){
+        musicList = list
+        generateList(list)  放在loadMusic之前
+        loadMusic(list(currentIndex))    
+    })
+    */
+   function generateList(musicList){
+        var container = document.createDocumentFragment();  //创建虚拟标签
+        musicList.forEach(function(musicObj){
+            var node = document.createElement('li');  //创建标签li
+            node.innerText = musicObj.auther + '-' + musicObj.title;
+            //console.log(node);
+            container.appendChild(node);
+        });
+        $('.musicbox .list').appendChild(container);   
+   }
+
+   //点击音乐列表，播放音乐
+   $('.musicbox .list').onclick = function(e){
+        var text = e.target.innerText        
+        musicList.forEach(function(musicObj,i){
+            $('.musicbox .progress-now').style.width = 0  //清除进度条
+            if(text == (musicObj.auther + '-' + musicObj.title)){ 
+                //点击某首音乐时，currnetIndex随之改变，此时要手动将播放的音乐下标i赋值给currentIndex，如果不赋值，在点击下/上一曲时会出错
+                //并且i要在loadMusic之前赋值给currentIndex，否则每次都是在播放完再赋值，点击音乐列表时，相应的颜色没有随之改变，而是其上/上上一首改变颜色               
+                currentIndex = i 
+                if(audio.paused){
+                    loadMusic(musicObj)
+                    audio.pause()
+                }else{
+                    loadMusic(musicObj)                    
+                }                
+            }
+        })
+   }
+</script>
+</body>
+</html>
