@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script src="https://code.jquery.com/jquery-1.9.1.min.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>珠宝首饰</title>
+<style>
+    * {
+        padding: 0;
+        margin: 0;
+        box-sizing: border-box;
+    }
+    body {
+        font-size: 12px;
+        color: #666;
+        text-align: left;
+    }
+    a {
+        color: #666;
+        text-decoration: none;
+    }
+    #main {
+        width: 702px;
+        margin: 10px auto;
+    }
+    .contain {
+        list-style: none;
+        margin-left: -20px;
+        margin-bottom: 40px;
+    }
+    .box {
+        position: relative;
+        float: left;
+        width: 220px;
+        padding: 10px 20px;
+        margin-left: 20px;
+        margin-top: 20px;
+        border: solid 1px rgb(230, 230, 230);
+        background-color: #fff;
+    }
+    .box.del {
+        display: none;
+    }
+    .box img {
+        width: 100%;
+        height: 100%;
+    }
+    .box .price {
+        color: red;
+        margin-top: 20px;
+    }
+    .box .cover {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: rgba(0,0,0,0.3);
+      transition: all 0.3s;
+      opacity: 0;
+    }
+    .cover .btn {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%,-50%);
+    }
+    .box.hover .cover {
+      opacity: 1;
+    }
+    .btn {
+        margin-right: 20px;
+        color: red;
+        padding: 7px 15px;
+        border: solid 1px red;
+        border-radius: 4px;
+        background-color: #fff;
+        cursor: pointer;
+    }
+    .clearfix:after {
+        content: '';
+        display: block;
+        clear: both;
+    }
+  .clearfix {
+    *zoom: 1;
+  }
+
+</style>
+</head>
+<body>
+    <div id='main'>
+        <h2>珠宝首饰</h2>
+        <ul class='contain clearfix'>
+            <li class='box'>
+                <div class="cover"><a href="" class='btn action-delete'>删除</a></div>
+                <div>
+                  <img src="https://picsum.photos/200/200/?image=1 " alt="">
+                  <p class='name'>珂兰 黄金手 猴哥款</p>
+                  <p class='price'>￥42</p>
+                </div>
+            </li>
+            <li class='box'>
+                <div class="cover"><a href="" class='btn action-delete'>删除</a></div>
+                <div>
+                  <img src="https://picsum.photos/200/200/?image=2 " alt="">
+                  <p class='name'>和田玉</p>
+                  <p class='price'>￥1699</p>
+                </div>
+            </li>
+            <li class='box'>
+                <div class="cover"><a href="" class='btn action-delete'>删除</a></div>
+                <div>
+                  <img src="https://picsum.photos/200/200/?image=3 " alt="">
+                  <p class='name'>路路通吊坠</p>
+                  <p class='price'>￥520</p>
+                </div>
+            </li>
+           
+        </ul>
+        <a href='#' class='btn btn-add'>添加</a>
+        <a href='#' class="btn btn-edit">编辑</a>
+    </div>
+    
+<script>
+    $('.btn-edit').on('click',function(){
+        $('.box').toggleClass('hover')
+    })
+    $('.contain').on('click','.action-delete',function(e){
+        $(this).parents('.box').remove()
+        //$(this).parents('.box').addClass('del')不能使用此行代码，否则会有越来越多的li，占据空间。
+        e.preventDefault()
+    })
+
+    function getProdHTML(prod){
+        var html=''
+        html += '<li class="box">'
+        html +=     '<div class="cover"><a href="" class="btn action-delete">删除</a></div>'
+        html +=     '<div>'
+        html +=         '<img src="'+prod.img+'" alt="">'
+        html +=         '<p class="name">' +prod.name+ '</p>'
+        html +=         '<p class="price">' +prod.price+ '</p>'
+        html +=     '</div>'
+        html += '</li>'
+        return html;
+    }
+
+    function getData(){
+        var results = []
+        for(var i=0; i<3; i++){
+            var rand = Math.floor(Math.random()*100)
+            var product = {
+                img: 'https://picsum.photos/200/200/?image=' +rand,
+                name: '珂兰 黄金手 猴哥款',
+                price: '￥' +rand
+            }
+            results.push(product)
+        }
+        return results
+    }
+
+    $('.btn-add').click(function(e){
+        e.preventDefault()
+        $('.box').removeClass('hover')
+        var products = getData()
+        $.each(products, function(idx, val){
+            var html = getProdHTML(val)
+            $('.contain').append(html)
+        })
+
+    })
+
+</script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
