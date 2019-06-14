@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <script src='http://code.jquery.com/jquery-2.1.1.min.js'></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://at.alicdn.com/t/font_1220894_y6s1fi2l8m.css">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>豆瓣电影</title>
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+    a {
+        text-decoration: none;
+    }
+    body {
+        font-size: 12px;
+        line-height: 1.2;
+        background-color: #f7f9fb;
+        color: #333;
+    }
+    .status {
+        height: 20px;
+        padding: 2px 0 0 12px;
+    }
+    .menu {
+        height: 44px;
+        font-size: 18px;
+        text-align: center;
+        padding-top: 10px;
+        border-bottom: solid 1px #f2f2f2;
+    }
+    main {
+        height: calc(100vh - 113px);
+        background-color: #fff;
+        overflow: scroll;
+        padding: 0 12px;
+        -webkit-overflow-scrolling: touch; /*在ios上增加弹性*/
+    }
+
+    footer {
+        height: 49px;
+        border-top: solid 1px #f2f2f2;
+        color: #999;
+    }
+    footer>div {
+        float: left;
+        width: 33.33%;
+        text-align: center;
+    }
+    /* footer {
+        position: absolute;
+        height: 49px;
+        width: 100%;
+        display: flex;
+        border-top: solid 1px #ccc;
+    }
+    footer>div {
+        flex: 1;
+        text-align: center;
+    } */
+    footer>div>span {
+        display: block;
+    }
+    footer>div>span:first-child {
+        font-size: 20px;
+        padding-top: 4px;
+    }
+    footer .active {
+        color: #ff8b02;
+    } 
+
+    section {
+        display: none;
+    }
+    section:first-child {
+        display: block;
+    }
+
+    .top250 .box {
+        display: block;
+        position:relative;
+        padding: 10px 0;
+        border-bottom: 1px solid #f2f2f2;
+    }
+    .top250 .number {
+        position:absolute;
+        top: 50%;
+        left: 13px;
+        transform: translate(-50%,-50%);
+        width: 28px;
+        height: 28px;
+        padding-top: 6px;
+        color: #fff;
+        font-size: 14px;
+        text-align: center;
+        border-radius: 50%;
+        background-color: #138ff9;
+    }
+    .top250 .contain {
+        margin-left: 44px;    
+    }
+    .top250 .name {
+        display: inline-block;
+        font-size: 14px;
+        color: #333;
+        font-weight: bold;
+        text-transform: capitalize;
+        padding-bottom: 5px;
+    }
+    .top250 .watchers {
+        float: right;
+        color: #a7a7a7;
+        font-size: 11px;
+        font-family: '黑体';
+        text-align: right;
+    }
+    .top250 .watchers>span {
+        font-size: 13px;
+        color: #fbd607;;
+        padding-left: 4px;
+    }
+    .top250 .description {
+        color: #868686;
+        letter-spacing: 0.3px;
+    }
+    .loading {
+        display: none;
+        padding: 8px;  
+        text-align: center;             
+    }
+    .loading .iconfont {
+        font-size: 20px;
+        color: #19d040;        
+        display: inline-block;
+        /* 旋转必须加display: inline-block */
+        animation: 1s rotate linear infinite;
+    }
+    @keyframes rotate {
+        0% { transform: rotate(0deg);}
+        100% { transform: rotate(360deg);}
+    }
+
+
+    .clearfix {
+        content: '';
+        display: block;
+        clear: both;
+    }
+</style>
+</head>
+<body>
+    <div class="status"></div>
+    <div class="menu">项目榜</div>
+    <main>
+        <section>
+            <div class="top250 clearfix">
+            <!-- <a href="#" class="box">
+                <div class="number">1</div>
+                <div class="contain">
+                    <div class="name">freeCodeCamp</div>
+                    <div class="watchers">303158<span class='iconfont icon-star'></span></div>
+                    <div class="description">The https://www.freeCodeCamp.org open source codebase and curriculum. Learn to code for free together with millions of people.</div>                   
+                </div>
+            </a> -->
+            </div>
+            <div class="loading"><span class="iconfont icon-loading"></span></div>
+        </section>
+        <section class='beimei'>2</section>
+        <section class='search'>3</section>
+
+    </main>
+    <footer class='clearfix'>
+        <div class='active'><span class="iconfont icon-top250"></span><span>项目榜</span></div>
+        <div><span class="iconfont icon-usertop"></span><span>用户榜</span></div>
+        <div><span class="iconfont icon-search"></span><span >搜索</span></div>
+    </footer>
+
+<script>
+    //status
+    var d = new Date()
+    var hours = d.getHours()
+    var min = d.getMinutes() + ''
+    min = min.length === 2 ? min : '0' + min
+    var time = hours + ':' + min
+    setInterval(function(){       
+        return $('.status').text(time)
+    },1000)
+
+    //footer
+    $('footer>div').on('click',function(){
+        $(this).addClass('active').siblings().removeClass('active')
+        //menu
+        var text = $(this).text()
+        $('.menu').text(text)
+        //显示不同视窗
+        var index = $(this).index()
+        $('section').eq(index).fadeIn().siblings().hide()
+    })
+ 
+    var index = 1
+    var isLoading = false
+
+    start()
+    function start(){
+        if(isLoading) return
+        isLoading = true
+        $('.loading').show()
+        $.ajax({
+            url: 'http://api.github.com/search/repositories?q=language:javascript&sort=stars&order=desc&page='+index,
+            type: 'GET',
+            dataType: 'jsonp'
+        }).done(function(ret){
+            console.log(ret)
+            setData(ret)
+            index += 1
+        }).fail(function(){
+            console.log('error...')
+        }).always(function(){
+            isLoading = false
+            $('.loading').hide()
+        })
+    }
+
+    // 滚动到距离底部还有10px加载下一页
+    // $('main').scroll(function(){
+    //     if($('.top250').height() - 10 <= $('main').height() + $('main').scrollTop()){
+    //         start()
+    //     }
+    // })
+
+    //函数节流，以防止在底部滚动鼠标，多次加载函数
+    var clock
+    $('main').scroll(function(){
+        if(clock){
+            clearTimeout(clock)
+        }
+        clock = setTimeout(function(){
+            if($('.top250').height() - 10 <= $('main').height() + $('main').scrollTop()){
+                start()
+            }
+        },300)
+    })
+
+    function setData(ret){
+        ret.data.items.forEach(function(val,i){
+            var tpl = `<a href="#" class="box">
+                <div class="number">1</div>
+                <div class="contain">
+                    <div class="name">freeCodeCamp</div>
+                    <div class="watchers">303158<span class="iconfont icon-star"></span></div>                    
+                    <div class="description">The https://www.freeCodeCamp.org open source codebase and curriculum. Learn to code for free together with millions of people.</div>                   
+                </div>
+            </a>`
+            var $node = $(tpl)
+            $node.find('.number').text(i+1+(index-1)*30)
+            if((i+1)%2===0){
+                $node.find('.number').css('background-color', '#21bbfb')
+            }
+            $node.find('.name').text(val.name)
+            $node.find('.watchers').text(val.watchers).append('<span class="iconfont icon-star"></span>')          
+            $node.find('.description').text(val.description)
+            $('.top250').append($node)           
+        })
+    }
+    
+</script>
+</body>
+</html>

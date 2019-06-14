@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <script src='http://code.jquery.com/jquery-2.1.1.min.js'></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://at.alicdn.com/t/font_1220894_y6s1fi2l8m.css">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>豆瓣电影</title>
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+    a {
+        text-decoration: none;
+    }
+    body {
+        font-size: 12px;
+        line-height: 1.2;
+        word-wrap :break-word; /*强制换行*/
+        background-color: #f7f9fb;
+        color: #333;
+    }
+    .status {
+        height: 20px;
+        padding: 2px 0 0 12px;
+    }
+    .menu {
+        position: relative;
+        height: 44px;
+        font-size: 18px;
+        text-align: center;
+        padding-top: 10px;
+        border-bottom: solid 1px #f2f2f2;
+    }
+
+    main {
+        height: calc(100vh - 113px);
+        background-color: #fff;
+        overflow: scroll;
+        padding: 0 12px;
+        -webkit-overflow-scrolling: touch; /*在ios上增加弹性*/
+    }
+
+    footer {
+        height: 49px;
+        border-top: solid 1px #f2f2f2;
+        color: #999;
+    }
+    footer>div {        
+        float: left;
+        width: 33.33%;
+        text-align: center;
+    }
+    /* footer {
+        position: absolute;
+        height: 49px;
+        width: 100%;
+        display: flex;
+        border-top: solid 1px #ccc;
+    }
+    footer>div {
+        flex: 1;
+        text-align: center;
+    } */
+    footer>div>span {       
+        display: block;
+    }
+    footer>div>span:first-child {
+        font-size: 20px;
+        padding-top: 4px;
+    }
+    footer .active {
+        color: #ff8b02;
+    } 
+
+    section {
+        display: none;
+    }
+    section:first-child {
+        display: block;
+    }
+    .top250 {
+        position: relative;
+    }
+    .top250 .box,
+    .search .box {
+        display: block;
+        position:relative;
+        padding: 10px 0;
+        border-bottom: 1px solid #f2f2f2;
+    }
+    .top250 .number,
+    .search .number {
+        position:absolute;
+        top: 50%;
+        left: 13px;
+        transform: translate(-50%,-50%);
+        width: 28px;
+        height: 28px;
+        padding-top: 6px;
+        color: #fff;
+        font-size: 14px;
+        text-align: center;
+        border-radius: 50%;
+        background-color: #138ff9;
+    }
+    .top250 .contain,
+    .search .contain {
+        margin-left: 44px;    
+    }
+    .top250 .name,
+    .search .name {
+        display: inline-block;
+        font-size: 14px;
+        color: #333;
+        font-weight: bold;
+        /* text-transform: capitalize; 首字母大写*/
+        padding-bottom: 5px;
+    }
+    .top250 .watchers,
+    .search .watchers {
+        float: right;
+        color: #a7a7a7;
+        font-size: 11px;
+        font-family: '黑体';
+        text-align: right;
+    }
+    .top250 .watchers>span,
+    .search .watchers>span {
+        font-size: 13px;
+        color: #fbd607;;
+        padding-left: 4px;
+    }
+    .top250 .description,
+    .search .description {
+        color: #868686;
+        letter-spacing: 0.3px;
+    }
+
+    /* .user {
+        padding: 10px 0;
+        border-bottom: 1px solid #f2f2f2;
+        position: relative;
+    } */
+    .user .box {
+        display: block;
+        padding: 10px 0;
+        border-bottom: 1px solid #f2f2f2;
+    }
+    .user .avatar_url {
+        display: inline-block;
+        width: 60px;
+        height: 60px;
+        background-color: #f2f2f2;
+        border-radius: 4px;
+    }
+    .user .name {
+        display: inline-block; 
+        vertical-align: top;  /* 顶对齐 */
+        color: #333;
+        font-weight: bold;
+        /* text-transform: capitalize; */
+        margin-left: 10px;
+    }
+
+    .search {
+        position: relative;
+    }
+    .search .info { 
+        position: relative; 
+        margin: 0 -12px 0 -12px;
+        padding: 0 12px 44px 12px;
+        border-bottom: 1px solid #f2f2f2;
+    }
+    .search .info>input {
+        float: right;
+        margin-top: 6px;
+        height: 32px;        
+        padding: 5px 0 5px 12px;
+        color: #333;
+        width: 100%;
+        border: 1px solid #f2f2f2;
+        border-radius: 3px;
+        background-color: #f2f2f2;
+    }
+    .search .info>span {
+        float: right;
+        font-size: 14px;
+        text-align: center;
+        margin-top: -32px;
+        padding-top: 7px;
+        height: 32px;
+        width: 60px;
+        color: #fff;
+        border: 1px solid #ff8b02;
+        border-radius: 0 3px 3px 0;
+        background-color: #ff8b02;
+    }
+    /* .search .container {
+        position: absolute;
+    } 
+    导致：下拉刷新时，loading会一直出现在页面顶部非底部，且文本内容不会折行，出现左右滑动，页面右边距消失
+    */
+
+    .loading {
+        display: none;
+        padding: 8px;  
+        text-align: center;             
+    }
+    .loading .iconfont {
+        font-size: 20px;
+        color: #19d040;        
+        display: inline-block;
+        /* 旋转必须加display: inline-block */
+        animation: 1s rotate linear infinite;
+    }
+    @keyframes rotate {
+        0% { transform: rotate(0deg);}
+        100% { transform: rotate(360deg);}
+    }
+
+    .clearfix {
+        content: '';
+        display: block;
+        clear: both;
+    }
+</style>
+</head>
+<body>
+    <div class="status"></div>
+    <div class="menu">项目榜</div>
+    <main class='clearfix'>
+        <section class='top250'>
+            <div class="container clearfix">
+                <!-- <a href="#" class="box">
+                    <div class="number">1</div>
+                    <div class="contain">
+                        <div class="name">freeCodeCamp</div>
+                        <div class="watchers">303158<span class='iconfont icon-star'></span></div>
+                        <div class="description">The https://www.freeCodeCamp.org open source codebase and curriculum. Learn to code for free together with millions of people.</div>                   
+                    </div>
+                </a> -->
+            </div>
+            <div class="loading"><span class="iconfont icon-loading"></span></div>
+        </section>
+        <section class='user'>
+            <div class="container clearfix">
+                <!-- <a href="#" class="box">
+                    <img src="https://avatars0.githubusercontent.com/u/905434?v=4" alt="" class="avatar_url">
+                    <h2 class="name">ruanyf</h2>
+                </a> -->
+            </div>
+            <div class="loading"><span class="iconfont icon-loading"></span></div>
+        </section>
+        <section class='search'>
+            <div class="info">
+                <input type="text" placeholder='Search repos'><span>Search</span>
+            </div>
+            <div class="container clearfix">
+                <!-- <a href="#" class="box">
+                    <div class="number">1</div>
+                    <div class="contain">
+                        <div class="name">freeCodeCamp</div>
+                        <div class="watchers">303158<span class='iconfont icon-star'></span></div>
+                        <div class="description">The https://www.freeCodeCamp.org open source codebase and curriculum. Learn to code for free together with millions of people.</div>                   
+                    </div>
+                </a> -->
+            </div>
+            <div class="loading"><span class="iconfont icon-loading"></span></div>
+        </section>
+    </main>
+    <footer class='clearfix'>
+        <div class='active'><span class="iconfont icon-top250"></span><span>项目榜</span></div>
+        <div><span class="iconfont icon-usertop"></span><span>用户榜</span></div>
+        <div><span class="iconfont icon-search"></span><span >搜索</span></div>
+    </footer>
+
+<script>
+
+    var top250 = {
+        init: function(){
+            this.$main = $('main')
+            this.$element = $('.top250')
+            this.isLoading = false
+            this.index = 1
+            this.isFinish = false  //判断数据是否结束
+            this.bind()
+            this.start()
+        },
+        bind: function(){
+            var _this = this
+            var clock
+            this.$main.scroll(function(){
+                if(clock){
+                    clearTimeout(clock)
+                }
+                clock = setTimeout(function(){ //当页面滚动直接执行start是不对的，需要判断当前页面是否到底部且数据是否全部加载完
+                    if(_this.$element.height() - 10 <= _this.$main.height() + _this.$main.scrollTop() && !_this.isFinish){ 
+                        _this.start() //滚动底部时获取数据getData，也可以直接start()
+                    }                  
+                    console.log(11)
+                },800)
+            })
+        },
+        start: function(){
+            var _this = this
+            this.getData(function(ret){
+                _this.render(ret)
+                console.log(22)
+            })            
+        },
+        getData: function(callback){  //获取数据，异步的
+            var _this = this
+            if(_this.isLoading) return
+            _this.isLoading = true
+            _this.$element.find('.loading').show()
+            $.ajax({
+                url: 'http://api.github.com/search/repositories?q=language:javascript&sort=stars&order=desc&page='+_this.index,
+                type: 'GET',
+                dataType: 'jsonp'
+            }).done(function(ret){
+                console.log('top250:',ret)              
+                callback && callback(ret)
+                console.log(33)
+            }).fail(function(){
+                console.log('数据异常')
+            }).always(function(){
+                _this.isLoading = false
+                _this.$element.find('.loading').hide()
+            })
+            console.log(44)
+        },
+        render: function(ret){  //渲染
+            var _this = this
+            if(Array.isArray(ret.data.items)){
+                _this.index += 1
+                if((_this.index-1)*30 >= ret.data.total_count){
+                    _this.isFinish = true
+                }
+                console.log('(_this.index-1)*30:',(_this.index-1)*30)
+                ret.data.items.forEach(function(val,i){
+                    var tpl = `<a href="#" class="box">
+                        <div class="number">1</div>
+                        <div class="contain">
+                            <div class="name">freeCodeCamp</div>
+                            <div class="watchers">303158<span class="iconfont icon-star"></span></div>                    
+                            <div class="description">The https://www.freeCodeCamp.org open source codebase and curriculum. Learn to code for free together with millions of people.</div>                   
+                        </div>
+                    </a>`
+                    var $node = $(tpl)
+                    $node.find('.number').text(i+1+(_this.index-2)*30)
+                    if((i+1)%2===0){
+                        $node.find('.number').css('background-color', '#21bbfb')
+                    }
+                    $node.find('.name').text(val.name)
+                    $node.find('.watchers').text(val.watchers).append('<span class="iconfont icon-star"></span>')          
+                    $node.find('.description').text(val.description)
+                    _this.$element.find('.container').append($node)           
+                })
+            }else{
+                _this.isFinish = true
+                console.log('API rate limit exceeded')
+            }
+        }
+        // isToBottom: function(){  //判断到底部
+        //     return this.$element.find('.container').height() - 10 <= this.$main.height() + this.$main.scrollTop()
+        // }
+    }
+
+    var user = {
+        init: function(){
+            this.$main = $('main')
+            this.$element = $('.user')
+            this.isLoading = false
+            this.index = 1
+            this.isFinish = false  //判断数据是否结束
+            this.bind()
+            this.start()
+        },
+        bind: function(){
+            var _this = this
+            var clock
+            this.$main.scroll(function(){
+                if(clock){
+                    clearTimeout(clock)
+                }
+                clock = setTimeout(function(){ //当页面滚动直接执行start是不对的，需要判断当前页面是否到底部且数据是否全部加载完
+                    if(_this.$element.height() - 10 <= _this.$main.height() + _this.$main.scrollTop() && !_this.isFinish){ 
+                        _this.start() //滚动底部时获取数据getData，也可以直接start()
+                    }                  
+                },800)
+            })
+        },
+        start: function(){
+            var _this = this
+            this.getData(function(ret){
+                _this.render(ret)
+            })            
+        },
+        getData: function(callback){  //获取数据，异步的
+            var _this = this
+            if(_this.isLoading) return
+            _this.isLoading = true
+            _this.$element.find('.loading').show()
+            $.ajax({
+                url: 'https://api.github.com/search/users?q=followers:>1000+language:javascript&page='+_this.index,
+                type: 'GET',
+                dataType: 'jsonp'
+            }).done(function(ret){
+                console.log('user:',ret)              
+                callback && callback(ret)
+            }).fail(function(){
+                console.log('数据异常')
+            }).always(function(){
+                _this.isLoading = false
+                _this.$element.find('.loading').hide()
+            })      
+        },
+        render: function(ret){  //渲染
+            var _this = this
+            if(Array.isArray(ret.data.items)){
+                _this.index += 1
+                if((_this.index-1)*30 >= ret.data.total_count){
+                    _this.isFinish = true
+                }
+                console.log('(_this.index-1)*30:',(_this.index-1)*30)
+                ret.data.items.forEach(function(val,i){
+                    var tpl = `<a href="#" class="box">
+                        <img src="https://avatars0.githubusercontent.com/u/905434?v=4" alt="" class="avatar_url">
+                        <h2 class="name">ruanyf</h2>
+                    </a>`
+                    var $node = $(tpl)
+                    $node.find('.avatar_url').attr('src',val.avatar_url)
+                    $node.find('.name').text(val.login)
+                    _this.$element.find('.container').append($node)           
+                })
+            }else{
+                _this.isFinish = true
+                console.log('API rate limit exceeded')
+            }
+        }
+        // isToBottom: function(){  //判断到底部
+        //     return this.$element.find('.container').height() - 10 <= this.$main.height() + this.$main.scrollTop()
+        // }
+    }
+
+    var search = {
+        init: function(){
+            this.$main = $('main')
+            this.$element = $('.search')
+            this.keyword = ''
+            this.isLoading = false
+            this.index = 1
+            this.isFinish = false  //判断数据是否结束
+            this.bind()
+        },
+        bind: function(){
+            var _this = this
+            this.$element.find('.info span').click(function(){
+                _this.keyword =  _this.$element.find('.info input').val()
+                _this.$element.find('.box').remove() //重新搜索，删除已有的内容
+                _this.index = 1  //下标重新从0开始
+                _this.start()
+            })
+            var clock
+            this.$main.scroll(function(){
+                if(clock){
+                    clearTimeout(clock)
+                }
+                clock = setTimeout(function(){ //当页面滚动直接执行start是不对的，需要判断当前页面是否到底部且数据是否全部加载完
+                    if(_this.$element.height() - 10 <= _this.$main.height() + _this.$main.scrollTop() && !_this.isFinish){ 
+                        _this.start() //滚动底部时获取数据getData，也可以直接start()
+                    }                  
+                },800)
+            })
+        },
+        start: function(){
+            var _this = this
+            this.getData(function(ret){
+                _this.render(ret)
+            })            
+        },
+        getData: function(callback){  //获取数据，异步的
+            var _this = this
+            if(_this.isLoading) return
+            _this.isLoading = true
+            _this.$element.find('.loading').show()
+            $.ajax({
+                // url: `https://api.github.com/search/repositories?q=${_this.keyword}+language:javascript&sort=stars&order=desc&page=${_this.index}`,
+                url: 'https://api.github.com/search/repositories?q='+_this.keyword+'+language:javascript&sort=stars&order=desc&page='+_this.index,
+                type: 'GET',
+                data: {
+                    q: _this.keyword
+                },
+                dataType: 'jsonp'
+            }).done(function(ret){
+                console.log('search:',ret)              
+                callback && callback(ret)
+            }).fail(function(){
+                console.log('数据异常')
+            }).always(function(){
+                _this.isLoading = false
+                _this.$element.find('.loading').hide()
+            })
+        },
+        render: function(ret){  //渲染
+            var _this = this
+            if(Array.isArray(ret.data.items)){
+                _this.index += 1
+                if((_this.index-1)*30 >= ret.data.total_count){
+                    _this.isFinish = true
+                }
+                console.log('(_this.index-1)*30:',(_this.index-1)*30)
+                ret.data.items.forEach(function(val,i){
+                    var tpl = `<a href="#" class="box">
+                        <div class="number">1</div>
+                        <div class="contain">
+                            <div class="name">freeCodeCamp</div>
+                            <div class="watchers">303158<span class="iconfont icon-star"></span></div>                    
+                            <div class="description">The https://www.freeCodeCamp.org open source codebase and curriculum. Learn to code for free together with millions of people.</div>                   
+                        </div>
+                    </a>`
+                    var $node = $(tpl)
+                    $node.find('.number').text(i+1+(_this.index-2)*30)
+                    if((i+1)%2===0){
+                        $node.find('.number').css('background-color', '#21bbfb')
+                    }
+                    $node.find('.name').text(val.name)
+                    $node.find('.watchers').text(val.watchers).append('<span class="iconfont icon-star"></span>')          
+                    $node.find('.description').text(val.description)
+                    _this.$element.find('.container').append($node)           
+                })
+            }else{
+                _this.isFinish = true
+                console.log('API rate limit exceeded')
+            }
+        }
+        // isToBottom: function(){  //判断到底部
+        //     return this.$element.find('.container').height() - 10 <= this.$main.height() + this.$main.scrollTop()
+        // }
+    }
+
+    var app = {
+        init: function(){
+            this.$tabs = $('footer>div')
+            this.$panels = $('section')
+            this.$menu = $('.menu')
+            this.bind()
+            top250.init()
+            user.init()
+            search.init()
+        },
+        bind: function(){
+            //status：显示时间
+            var d = new Date()
+            var hours = d.getHours()
+            var min = d.getMinutes() + ''
+            min = min.length === 2 ? min : '0' + min
+            var time = hours + ':' + min
+            setInterval(function(){       
+                return $('.status').text(time)
+            },1000)
+
+            //footer：显示不同视窗
+            var _this = this
+            this.$tabs.on('click',function(){
+                $(this).addClass('active').siblings().removeClass('active')
+                _this.$panels.eq($(this).index()).fadeIn().siblings().hide()
+                //menu：显示对应菜单
+                _this.$menu.text($(this).text())
+                
+            })
+            // this.$tabs.eq(2).on('click',function(){
+            //     _this.$menu.text('')
+            // })
+        }
+    }
+
+    app.init()
+   
+</script>
+</body>
+</html>
