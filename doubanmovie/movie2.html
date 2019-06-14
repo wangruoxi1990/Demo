@@ -318,7 +318,7 @@
             _this.isLoading = true
             _this.$element.find('.loading').show()
             $.ajax({
-                url: 'http://api.github.com/search/repositories?q=language:javascript&sort=stars&order=desc&page='+_this.index,
+                url: 'https://api.github.com/search/repositories?q=language:javascript&sort=stars&order=desc&page='+_this.index,
                 type: 'GET',
                 dataType: 'jsonp'
             }).done(function(ret){
