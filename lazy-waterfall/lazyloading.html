@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <script src='http://code.jquery.com/jquery-1.9.1.min.js'></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>懒加载</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+        .main {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .main img {
+            float: left;
+            width: 33.3%;
+            padding: 5px;
+        }
+        .main:after {
+            content: '';
+            display: block;
+            clear: both;
+        }
+    </style>
+</head>
+<body>
+    <div class="main">
+        <img src="http://via.placeholder.com/100x100" alt='' data-src="http://cdn.jirengu.com/book.jirengu.com/img/1.jpg">
+        <img src="http://via.placeholder.com/100x100" alt='' data-src="http://cdn.jirengu.com/book.jirengu.com/img/2.jpg">
+        <img src="http://via.placeholder.com/100x100" alt='' data-src="http://cdn.jirengu.com/book.jirengu.com/img/3.jpg">
+        <img src="http://via.placeholder.com/100x100" alt='' data-src="http://cdn.jirengu.com/book.jirengu.com/img/4.jpg">
+        <img src="http://via.placeholder.com/100x100" alt='' data-src="http://cdn.jirengu.com/book.jirengu.com/img/5.jpg">
+        <img src="http://via.placeholder.com/100x100" alt='' data-src="http://cdn.jirengu.com/book.jirengu.com/img/6.jpg">
+        <img src="http://via.placeholder.com/100x100" alt='' data-src="http://cdn.jirengu.com/book.jirengu.com/img/7.jpg">
+        <img src="http://via.placeholder.com/100x100" alt='' data-src="http://cdn.jirengu.com/book.jirengu.com/img/8.jpg">
+        <img src="http://via.placeholder.com/100x100" alt='' data-src="http://cdn.jirengu.com/book.jirengu.com/img/9.jpg">
+        <img src="http://via.placeholder.com/100x100" alt='' data-src="http://cdn.jirengu.com/book.jirengu.com/img/10.jpg">
+        <img src="http://via.placeholder.com/100x100" alt='' data-src="http://cdn.jirengu.com/book.jirengu.com/img/11.jpg">
+        <img src="http://via.placeholder.com/100x100" alt='' data-src="http://cdn.jirengu.com/book.jirengu.com/img/12.jpg">
+        <img src="http://via.placeholder.com/100x100" alt='' data-src="http://cdn.jirengu.com/book.jirengu.com/img/13.jpg">
+        <img src="http://via.placeholder.com/100x100" alt='' data-src="http://cdn.jirengu.com/book.jirengu.com/img/14.jpg">
+        <img src="http://via.placeholder.com/100x100" alt='' data-src="http://cdn.jirengu.com/book.jirengu.com/img/15.jpg">
+        <img src="http://via.placeholder.com/100x100" alt='' data-src="http://cdn.jirengu.com/book.jirengu.com/img/16.jpg">
+        <img src="http://via.placeholder.com/100x100" alt='' data-src="http://cdn.jirengu.com/book.jirengu.com/img/17.jpg">
+        <img src="http://via.placeholder.com/100x100" alt='' data-src="http://cdn.jirengu.com/book.jirengu.com/img/18.jpg">
+        <img src="http://via.placeholder.com/100x100" alt='' data-src="http://cdn.jirengu.com/book.jirengu.com/img/19.jpg">
+        <img src="http://via.placeholder.com/100x100" alt='' data-src="http://cdn.jirengu.com/book.jirengu.com/img/20.jpg">
+        <img src="http://via.placeholder.com/100x100" alt='' data-src="http://cdn.jirengu.com/book.jirengu.com/img/21.jpg">
+        <img src="http://via.placeholder.com/100x100" alt='' data-src="http://cdn.jirengu.com/book.jirengu.com/img/22.jpg">
+        <img src="http://via.placeholder.com/100x100" alt='' data-src="http://cdn.jirengu.com/book.jirengu.com/img/23.jpg">
+        <img src="http://via.placeholder.com/100x100" alt='' data-src="http://cdn.jirengu.com/book.jirengu.com/img/24.jpg">
+        <img src="http://via.placeholder.com/100x100" alt='' data-src="http://cdn.jirengu.com/book.jirengu.com/img/25.jpg">
+        <img src="http://via.placeholder.com/100x100" alt='' data-src="http://cdn.jirengu.com/book.jirengu.com/img/26.jpg">
+        <img src="http://via.placeholder.com/100x100" alt='' data-src="http://cdn.jirengu.com/book.jirengu.com/img/27.jpg">
+    </div>
+</body>
+<script>
+    start()
+
+    $(window).on('scroll',function(){
+        start()
+    })
+
+    function start(){
+        $('.main img').not('[data-isLoaded]').each(function(){ //筛除已加载的图片
+            var $node = $(this)
+            if(isShow($node)){
+                setTimeout(function(){
+                    loadImg($node)
+                },500)               
+            }
+        })
+    }
+    //判断元素是否出现在窗口
+    function isShow($node){
+        return $node.offset().top <= $(window).height() + $(window).scrollTop()
+    }
+    //加载图片
+    function loadImg($img){
+        $img.attr('src',$img.attr('data-src'))
+        $img.attr('data-isLoaded',1) //设置已加载的图片为true
+    }
+</script>
+</html>
