@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <script src='https://code.jquery.com/jquery-1.9.1.min.js'></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>瀑布流根据窗口大小重新布局</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+        .container {
+            /* max-width: 600px; */
+            position: relative;
+            margin: 0 auto;
+        }
+        .container img {
+            width: 150px;
+            padding: 8px;
+            position: absolute;
+            transition: .5s;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <img src="http://via.placeholder.com/150x100" alt="">
+        <img src="http://via.placeholder.com/150x200" alt="">
+        <img src="http://via.placeholder.com/150x70" alt="">
+        <img src="http://via.placeholder.com/150x50" alt="">
+        <img src="http://via.placeholder.com/150x140" alt="">
+        <img src="http://via.placeholder.com/150x180" alt="">
+        <img src="http://via.placeholder.com/150x60" alt="">
+        <img src="http://via.placeholder.com/150x250" alt="">
+        <img src="http://via.placeholder.com/150x80" alt="">
+        <img src="http://via.placeholder.com/150x70" alt="">
+        <img src="http://via.placeholder.com/150x100" alt="">
+        <img src="http://via.placeholder.com/150x160" alt="">
+        <img src="http://via.placeholder.com/150x120" alt="">
+        <img src="http://via.placeholder.com/150x190" alt="">
+        <img src="http://via.placeholder.com/150x70" alt="">
+        <img src="http://via.placeholder.com/150x80" alt="">
+        <img src="http://via.placeholder.com/150x100" alt="">
+        <img src="http://via.placeholder.com/150x170" alt="">
+        <img src="http://via.placeholder.com/150x90" alt="">
+        <img src="http://via.placeholder.com/150x180" alt="">
+        <img src="http://via.placeholder.com/150x210" alt="">
+        <img src="http://via.placeholder.com/150x50" alt="">
+        <img src="http://via.placeholder.com/150x100" alt="">
+        <img src="http://via.placeholder.com/150x60" alt="">
+        <img src="http://via.placeholder.com/150x90" alt="">
+        <img src="http://via.placeholder.com/150x40" alt="">
+        <img src="http://via.placeholder.com/150x210" alt="">
+        <img src="http://via.placeholder.com/150x150" alt="">
+    </div>   
+</body>
+<script>
+    var waterfall = {
+        init: function(){
+            this.colWidth = $('.container img').outerWidth(true)
+            this.colCount = Math.floor($(window).width() / this.colWidth)
+            this.colHeightArray = []
+            for(var i=0; i<this.colCount; i++){
+                this.colHeightArray[i] = 0
+            }
+            this.bind()            
+        },
+        start: function($node){
+            var _this = this
+            var idx = 0
+            var minHeight = this.colHeightArray[0]
+            for(var i=0; i<this.colCount; i++){
+                if(this.colHeightArray[i] < minHeight){
+                    minHeight = _this.colHeightArray[i]
+                    idx = i
+                }
+            }
+            $node.css({
+                top: minHeight,
+                left: _this.colWidth * idx
+            })
+            this.colHeightArray[idx] += $node.outerHeight(true)           
+        },
+        bind: function(){
+            var _this = this
+            $('.container img').on('load',function(){
+                _this.start($(this))
+            })
+
+            $(window).on('resize',function(){  //修改窗口大小时，列数及每列高度数组需要重置
+                _this.colCount = Math.floor($(window).width() / _this.colWidth)
+                _this.colHeightArray = []
+                for(var i=0; i<_this.colCount; i++){
+                    _this.colHeightArray[i] = 0
+                }
+                $('.container img').each(function(){
+                    _this.start($(this))
+                })
+            })
+        }
+    }
+    waterfall.init()
+    /*
+    var colWidth = $('.container img').outerWidth(true)
+    var colCount = Math.floor($(window).width() / colWidth)
+    var colHeightArray = []
+    for(var i=0; i<colCount; i++){
+        colHeightArray[i] = 0
+    }
+    $('.container img').on('load',function(){
+        var idx = 0
+        var minHeight = colHeightArray[0]
+        for(var i=0; i<colCount; i++){
+            if(colHeightArray[i] < minHeight){
+                minHeight = colHeightArray[i]
+                idx = i
+            }
+        }
+        $(this).css({
+            top: minHeight,
+            left: colWidth * idx
+        })
+        colHeightArray[idx] += $(this).outerHeight(true)
+    })
+
+    $(window).on('resize',function(){  //修改窗口大小时，列数及每列高度数组需要重置
+        colCount = Math.floor($(window).width() / colWidth)
+        colHeightArray = []
+        for(var i=0; i<colCount; i++){
+            colHeightArray[i] = 0
+        }
+
+        $('.container img').each(function(){
+            var idx = 0
+            var minHeight = colHeightArray[0]
+            for(var i=0; i<colCount; i++){
+                if(colHeightArray[i] < minHeight){
+                    minHeight = colHeightArray[i]
+                    idx = i
+                }
+            }
+            $(this).css({
+                top: minHeight,
+                left: colWidth * idx
+            })
+            colHeightArray[idx] += $(this).outerHeight(true)            
+        })
+    })
+    */
+</script>
+</html>
