@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <script src='https://code.jquery.com/jquery-1.9.1.min.js'></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>瀑布流新闻网站</title>
+    <style>
+        * {
+            padding: 0;
+            margin: 0;
+            box-sizing: border-box;
+        }
+        ul,li {
+            list-style: none;
+        }
+        .clearfix:after {
+            content: '';
+            display: block;
+            clear: both;
+        }
+        .ct-waterfall {
+            width: 670px;
+            margin: 0 auto;
+        }
+        #pic-ct {
+            position: relative;
+        }
+        #pic-ct .item {
+            position: absolute;
+            width: 200px;
+            padding: 0 0 10px 0;
+            margin: 10px;
+            border: solid 1px #ececec;
+            background-color: #fff;
+            box-shadow: 2px 2px 3px #e8e8e8,-2px 2px 3px #e8e8e8;
+            transition: all .6s;
+        }
+        #pic-ct .item img{
+            width: 176px;
+            margin: 12px;
+        }
+        #pic-ct .item .header {
+            font-size: 14px;
+            color: #333;
+            margin: 0 12px;
+            padding-bottom: 10px;
+            border-bottom: solid 1px #e1e1e1;
+        }
+        #pic-ct .item .desp {
+            font-size: 12px;
+            line-height: 1.6;
+            color: #888;
+            margin: 10px 12px;
+            text-align: justify;
+        }
+        #load {
+            visibility: hidden;
+            height: 20px;
+        }
+        .hide {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class='ct-waterfall'>
+        <ul id='pic-ct' class="clearfix">
+            <!-- <li class="item">
+                <a href="#" class='link'>
+                    <img src="http://via.placeholder.com/150x100" alt="">
+                </a>
+                <h5 class="header">标题</h5>
+                <p class="desp">这是一段话，这是一段话这是一段话，这是一段话。</p>
+            </li> -->
+            <li class='item hide'></li>
+        </ul>
+        <div id="load">这是看不见的</div>
+    </div>
+</body>
+<script>
+    var curPage = 1
+    var perPageCount = 10
+    var colSumHeight = []
+
+    //懒加载
+    var target = $('#load')
+    checkShow();
+    
+    function checkShow(){
+        if(isShow(target)){
+            dosth()
+        }
+    }
+
+    var clock   //函数节流
+    $(window).scroll(function(){
+        if(clock){
+            clearTimeout(clock)
+        }
+        clock = setTimeout(function(){
+            checkShow()
+        },500)
+    })
+
+    function isShow($el){
+        var scrollH = $(window).scrollTop()
+        var winH = $(window).height()
+        var top = $el.offset().top
+
+        if(top < scrollH + winH){
+            return true
+        }else{
+            return false
+        }
+    }
+
+    //当load出现在窗口就dosth：获取数据，获取完数据拼装dom，拼装完使用瀑布流渲染
+    function dosth(callback){
+        $.ajax({
+            url: 'https://photo.sina.cn/aj/v2/index?cate=military',
+            // type: 'get',
+            dataType: 'jsonp',
+            jsonp: 'callback',
+            data: {
+                pagesize: perPageCount,
+                page: curPage
+            }
+        }).done(function(ret){
+            console.log('ret:',ret)
+            if(ret && ret.code == 1){  
+                curPage++             
+                $nodes = renderData(ret.data)
+                //callback(ret.data)
+                waterfall($nodes)
+            }else{
+                console.log('get error data')
+            }
+        })
+    }
+
+    //拼装dom
+    function renderData(items){
+        var tpl = ''
+        var $nodes
+        for(var i=0; i<items.length; i++){
+            tpl += '<li class="item">'
+            tpl += '<a href="#" class="link"><img src="' + items[i].thumb + '" alt=""></a>'
+            tpl += '<h5 class="header">' + items[i].stitle + '</h5>'
+            tpl += '<p class="desp">' +items[i].title + '</p>'
+            tpl += '</li>'
+        }
+        $nodes = $(tpl)
+        $('#pic-ct').append($nodes)
+        return $nodes
+    }
+
+    //瀑布流渲染
+    function waterfall($nodes){
+        var nodeWidth = $nodes.outerWidth(true)
+        var colNum = Math.floor($('.ct-waterfall').width() / nodeWidth)
+        if(colSumHeight.length == 0){
+            for(var i=0; i<colNum; i++){
+                colSumHeight.push(0)
+            }
+        }
+
+        $nodes.each(function(){
+            var  $cur= $(this)
+            $cur.find('img').on('load',function(){
+                var idx = 0
+                var minSumHeight = colSumHeight[0]
+                for(var i=0; i<colSumHeight.length; i++){
+                    if(colSumHeight[i] < minSumHeight){
+                        minSumHeight = colSumHeight[i]
+                        idx = i
+                    }
+                }
+                $cur.css({
+                    top: minSumHeight,
+                    left: nodeWidth * idx
+                })
+                colSumHeight[idx] += $cur.outerHeight(true)
+                $('#pic-ct').height(Math.max.apply(null,colSumHeight)) //获取数组中的最大值
+            })
+        })
+    }
+</script>
+</html>

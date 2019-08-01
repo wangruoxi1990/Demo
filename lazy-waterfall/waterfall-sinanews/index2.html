@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <script src='https://code.jquery.com/jquery-1.9.1.min.js'></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>瀑布流新闻网站</title>
+    <style>
+        * {
+            padding: 0;
+            margin: 0;
+        }
+        ul,li {
+            list-style: none;
+        }
+        .clearfix:after {
+            content: '';
+            display: block;
+            clear: both;
+        }
+        .ct-waterfall {
+            width: 670px;
+            margin: 0 auto;
+        }
+        #pic-ct {
+            position: relative;
+        }
+        #pic-ct .item {
+            position: absolute;
+            width: 200px;
+            padding: 0 0 10px 0;
+            margin: 10px;
+            border: solid 1px #ececec;
+            background-color: #fff;
+            box-shadow: 1px 1px 3px #e8e8e8,-1px 1px 3px #e8e8e8;
+            transition: all .6s;
+        }
+        #pic-ct .item img{
+            width: 176px;
+            margin: 12px;
+        }
+        #pic-ct .item .header {
+            font-size: 14px;
+            color: #333;
+            margin: 0 12px;
+            padding-bottom: 10px;
+            border-bottom: solid 1px #e1e1e1;
+        }
+        #pic-ct .item .desp {
+            font-size: 12px;
+            line-height: 1.6;
+            color: #888;
+            margin: 10px 12px;
+            text-align: justify;
+        }
+        #load {
+            visibility: hidden;
+            height: 20px;
+        }
+        .hide {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class='ct-waterfall'>
+        <ul id='pic-ct' class="clearfix">
+            <!-- <li class="item">
+                <a href="#" class='link'>
+                    <img src="http://via.placeholder.com/150x100" alt="">
+                </a>
+                <h5 class="header">标题</h5>
+                <p class="desp">这是一段话，这是一段话这是一段话，这是一段话。</p>
+            </li> -->
+            <li class='item hide'></li>
+        </ul>
+        <div id="load">这是看不见的</div>
+    </div>
+</body>
+<script>
+    var curPage = 1
+    var perPageCount = 10
+    var colSumHeight = []
+    var nodeWidth = $('.item').outerWidth(true)
+    var colNum = parseInt($('#pic-ct').width()/nodeWidth)
+
+    for(var i = 0; i < colNum; i++){
+        colSumHeight[i] = 0
+    }
+
+    var isDataArrive = true
+
+    start()
+
+    function start(){
+        getData(function(newsList){
+            isDataArrive = true
+            $.each(newsList, function(idx, news){
+                var $node = getNode(news)
+                $node.find('img').load(function(){
+                    $('#pic-ct').append($node)
+                    console.log($node, 'loaded...')
+                    waterFallPlace($node)
+                })
+            })
+        })
+        isDataArrive = false	
+    }
+
+
+
+$(window).scroll(function(){
+	if(!isDataArrive) return
+		
+	if(isVisible($('#load'))){
+		start()
+	}
+})
+
+function getData(callback){
+		$.ajax({
+			url: 'https://photo.sina.cn/aj/v2/index?cate=military',
+			dataType: 'jsonp',   
+			jsonp:"callback",
+			data: {
+				pagesize: perPageCount,
+				page: curPage
+			}
+		}).done(function(ret){
+			if(ret && ret.code == 1 ){
+				callback(ret.data);   //如果数据没问题，那么生成节点并摆放好位置
+				curPage++
+			}else{
+				console.log('get error data');
+			}
+		});
+}
+
+
+function getNode(item){
+	var tpl = ''
+		tpl += '<li class="item">';
+		tpl += ' <a href="'+ item.url +'" class="link"><img src="' + item.thumb + '" alt=""></a>';
+		tpl += ' <h4 class="header">'+ item.stitle +'</h4>';
+		tpl += '<p class="desp">' + item.title +'</p>';
+		
+		tpl += '</li>';
+	
+	return $(tpl)
+}
+
+function waterFallPlace($node){
+
+		var idx = 0,
+			  minSumHeight = colSumHeight[0];
+
+		for(var i=0;i<colSumHeight.length; i++){
+			if(colSumHeight[i] < minSumHeight){
+				idx = i;
+				minSumHeight = colSumHeight[i];
+			}
+		}
+		$node.css({
+			left: nodeWidth*idx,
+			top: minSumHeight,
+			opacity: 1
+		});
+
+		colSumHeight[idx] = $node.outerHeight(true) + colSumHeight[idx];
+		$('#pic-ct').height(Math.max.apply(null,colSumHeight));
+
+}
+
+	function isVisible($el){
+	  var scrollH = $(window).scrollTop(),
+	  	  winH = $(window).height(),
+	  	  top = $el.offset().top;
+
+  	  if(top < winH + scrollH){
+  	  	return true;
+  	  }else{
+  	  	return false;
+  	  }
+	}
+
+
+
+
+</script>
+</html>
